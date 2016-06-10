@@ -2,6 +2,10 @@ from io import StringIO
 from xml.sax.saxutils import XMLGenerator
 
 
+class RenderError(Exception):
+    pass
+
+
 class XMLRenderer:
     def render(self, data):
         stream = StringIO()
@@ -10,11 +14,11 @@ class XMLRenderer:
         xml.startDocument()
 
         if isinstance(data, (list, tuple)):
-            assert False, 'Renderer of iterables not supported yet'
+            raise RenderError('Renderer of iterables is not supported')
 
         keys = list(data.keys())
         if len(keys) != 1:
-            assert False, 'Data should only have one key to use it as root'
+            raise RenderError('`data` should have only one key, the root')
 
         root_element = keys[0]
 
