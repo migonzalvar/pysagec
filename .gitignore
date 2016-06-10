@@ -1,0 +1,6 @@
+.coverage
+.tox
+*.egg-info
+dist
+*.pyc
+.cache
