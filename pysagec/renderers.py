@@ -7,7 +7,8 @@ class RenderError(Exception):
 
 
 class XMLRenderer:
-    def render(self, data):
+    def render(self, data, namespaces=None):
+        namespaces = namespaces or []
         stream = StringIO()
 
         xml = XMLGenerator(stream, encoding='utf-8')
@@ -22,7 +23,8 @@ class XMLRenderer:
 
         root_element = keys[0]
 
-        xml.startElement(root_element, {})  # TODO: add namespaces
+        attrs = {'xmlns:' + ns: url for ns, url in namespaces}
+        xml.startElement(root_element, attrs)
 
         self._to_xml(xml, data[root_element])
 

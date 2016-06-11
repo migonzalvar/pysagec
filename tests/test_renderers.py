@@ -41,3 +41,13 @@ def test_xml_render_raises_error_if_data_is_iterable():
     renderer = XMLRenderer()
     with pytest.raises(RenderError):
         renderer.render([{'one': None}, {'two': None}])
+
+
+def test_xml_renderer_namespaces():
+    renderer = XMLRenderer()
+    namespaces = [('foo', 'http://example.com/ns')]
+    stream = renderer.render({'root': None}, namespaces=namespaces)
+    assert (
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        '<root xmlns:foo="http://example.com/ns"></root>'
+    ) == stream
