@@ -1,20 +1,29 @@
 from pysagec import models
 
 
-def test_auth_info():
-    values = [
-        ('mrw:CodigoFranquicia', 'franchise_code', '123456'),
-        ('mrw:CodigoAbonado', 'subscriber_code', 'subscriber_code'),
-        ('mrw:CodigoDepartamento', 'departament_code', 'departament_code'),
-        ('mrw:UserName', 'username', 'username'),
-        ('mrw:Password', 'password', 'password'),
-    ]
-    kwargs = {}
-    expected = {'mrw:AuthInfo': []}
-    for tag, prop, value in values:
-        kwargs[prop] = value
-        expected['mrw:AuthInfo'].append({tag: value})
+def test_field():
+    f = models.Field('tag')
+    assert f.__get__(None, None) is f
+    assert 'Field' in repr(f)
 
-    auth_info = models.AuthInfo(**kwargs)
-    data = auth_info.as_dict()
-    assert expected == data
+
+def test_model_as_dict():
+    class MyModel(models.Model):
+        root_tag = 'root'
+        prop1 = models.Field('tag1')
+        prop2 = models.Field('tag2')
+
+    model = MyModel(prop1=42)
+    model.prop2 = 'foo'
+
+    assert model.prop1 == 42
+    assert {'root': [{'tag1': 42}, {'tag2': 'foo'}]} == model.as_dict()
+
+
+def test_model_default():
+    class MyModel(models.Model):
+        root_tag = 'root'
+        prop = models.Field('tag')
+
+    model = MyModel()
+    assert model.prop is None
