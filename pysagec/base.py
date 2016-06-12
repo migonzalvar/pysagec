@@ -2,13 +2,13 @@ from collections import OrderedDict as odict
 
 
 class Field:
-    def __init__(self, tag_name):
+    def __init__(self, tag_name, default=None):
         self.tag_name = tag_name
         self.value = None
+        self.default = default
 
-        # These values will be set by metaclass
+        # This value will be set by metaclass
         self.name = None
-        self.default = None
 
     def __get__(self, obj, objtype=None):
         if obj is None:

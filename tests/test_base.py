@@ -23,7 +23,7 @@ def test_model_as_dict():
 def test_model_default():
     class MyModel(base.Model):
         root_tag = 'root'
-        prop = base.Field('tag')
+        prop = base.Field('tag', default='x')
 
     model = MyModel()
-    assert model.prop is None
+    assert model.prop == 'x'
