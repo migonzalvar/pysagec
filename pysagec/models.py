@@ -1,17 +1,61 @@
-class AuthInfo:
-    def __init__(self, franchise_code, subscriber_code, departament_code,
-                 username, password):
-        self.subscriber_code = subscriber_code
-        self.franchise_code = franchise_code
-        self.departament_code = departament_code
-        self.username = username
-        self.password = password
+from collections import OrderedDict as odict
+
+
+class Field:
+    def __init__(self, tag_name):
+        self.tag_name = tag_name
+        self.value = None
+
+        # These values will be set by metaclass
+        self.name = None
+        self.default = None
+
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        else:
+            return obj.__dict__.get(self.name, self.default)
+
+    def __set__(self, obj, value):
+        self.value = value
+        obj.__dict__[self.name] = value
+
+    def __repr__(self):
+        return '<Field name={!r}>'.format(self.name)
+
+
+class ModelMeta(type):
+    def __new__(mcs, clsname, bases, clsdict):
+        fields = []
+        for name, value in clsdict.items():
+            if isinstance(value, Field):
+                value.name = name  # Init `Field.name`
+                fields.append(value)
+        clsdict['fields'] = fields
+        return type.__new__(mcs, clsname, bases, clsdict)
+
+    @classmethod
+    def __prepare__(mcs, clsname, bases):
+        return odict()
+
+
+class Model(metaclass=ModelMeta):
+    root_tag = 'root'
+
+    def __init__(self, **kwargs):
+        for name, value in kwargs.items():
+            setattr(self, name, value)
 
     def as_dict(self):
-        return {'mrw:AuthInfo': [
-            {'mrw:CodigoFranquicia': self.franchise_code},
-            {'mrw:CodigoAbonado': self.subscriber_code},
-            {'mrw:CodigoDepartamento': self.departament_code},
-            {'mrw:UserName': self.username},
-            {'mrw:Password': self.password},
-        ]}
+        tags = [{k.tag_name: k.value} for k in self.fields]
+        return {self.root_tag: tags}
+
+
+class AuthInfo(Model):
+    root_tag = 'mrw:AuthInfo'
+
+    franchise_code = Field('mrw:CodigoFranquicia')
+    subscriber_code = Field('mrw:CodigoAbonado')
+    departament_code = Field('mrw:CodigoDepartamento')
+    username = Field('mrw:UserName')
+    password = Field('mrw:Password')
