@@ -2,18 +2,19 @@ from pysagec import models
 
 
 def test_auth_info():
-    kwargs = {'franchise_code': '123456',
-              'subscriber_code': 'subscriber_code',
-              'departament_code': 'departament_code',
-              'username': 'username',
-              'password': 'password'}
+    values = [
+        ('mrw:CodigoFranquicia', 'franchise_code', '123456'),
+        ('mrw:CodigoAbonado', 'subscriber_code', 'subscriber_code'),
+        ('mrw:CodigoDepartamento', 'departament_code', 'departament_code'),
+        ('mrw:UserName', 'username', 'username'),
+        ('mrw:Password', 'password', 'password'),
+    ]
+    kwargs = {}
+    expected = {'mrw:AuthInfo': []}
+    for tag, prop, value in values:
+        kwargs[prop] = value
+        expected['mrw:AuthInfo'].append({tag: value})
+
     auth_info = models.AuthInfo(**kwargs)
     data = auth_info.as_dict()
-    expected = {'mrw:AuthInfo': [
-        {'mrw:CodigoFranquicia': kwargs['franchise_code']},
-        {'mrw:CodigoAbonado': kwargs['subscriber_code']},
-        {'mrw:CodigoDepartamento': kwargs['departament_code']},
-        {'mrw:UserName': kwargs['username']},
-        {'mrw:Password': kwargs['password']},
-    ]}
     assert expected == data
