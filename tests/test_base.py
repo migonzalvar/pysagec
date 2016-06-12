@@ -1,17 +1,17 @@
-from pysagec import models
+from pysagec import base
 
 
 def test_field():
-    f = models.Field('tag')
+    f = base.Field('tag')
     assert f.__get__(None, None) is f
     assert 'Field' in repr(f)
 
 
 def test_model_as_dict():
-    class MyModel(models.Model):
+    class MyModel(base.Model):
         root_tag = 'root'
-        prop1 = models.Field('tag1')
-        prop2 = models.Field('tag2')
+        prop1 = base.Field('tag1')
+        prop2 = base.Field('tag2')
 
     model = MyModel(prop1=42)
     model.prop2 = 'foo'
@@ -21,9 +21,9 @@ def test_model_as_dict():
 
 
 def test_model_default():
-    class MyModel(models.Model):
+    class MyModel(base.Model):
         root_tag = 'root'
-        prop = models.Field('tag')
+        prop = base.Field('tag')
 
     model = MyModel()
     assert model.prop is None
