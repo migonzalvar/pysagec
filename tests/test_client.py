@@ -1,15 +1,16 @@
 import os
 import pytest
-import pysagec
+
+from pysagec import Client
 
 
 @pytest.fixture
 def client():
-    return pysagec.Client()
+    return Client()
 
 
 def test_client_init():
-    sagec = pysagec.Client('example.com')
+    sagec = Client('example.com')
     assert sagec.base_url == 'http://example.com/MRWEnvio.asmx'
 
 
