@@ -4,14 +4,23 @@ from pysagec import base
 def test_field():
     f = base.Field('tag')
     assert f.__get__(None, None) is f
-    assert 'Field' in repr(f)
+
+
+def test_string():
+    f = base.String('tag')
+    assert 'String' in repr(f)
+
+
+def test_nested():
+    f = base.Nested('tag', base.Model)
+    assert 'Nested' in repr(f)
 
 
 def test_model_as_dict():
     class MyModel(base.Model):
         root_tag = 'root'
-        prop1 = base.Field('tag1')
-        prop2 = base.Field('tag2')
+        prop1 = base.String('tag1')
+        prop2 = base.String('tag2')
 
     model = MyModel(prop1=42)
     model.prop2 = 'foo'
@@ -23,7 +32,7 @@ def test_model_as_dict():
 def test_model_default():
     class MyModel(base.Model):
         root_tag = 'root'
-        prop = base.Field('tag', default='x')
+        prop = base.String('tag', default='x')
 
     model = MyModel()
     assert model.prop == 'x'
@@ -32,8 +41,8 @@ def test_model_default():
 def test_nested_single_unwrap():
     class ChildModel(base.Model):
         root_tag = None
-        leaf1 = base.Field('leaf1')
-        leaf2 = base.Field('leaf2')
+        leaf1 = base.String('leaf1')
+        leaf2 = base.String('leaf2')
 
     class ParentModel(base.Model):
         root_tag = 'root'
@@ -47,8 +56,8 @@ def test_nested_single_unwrap():
 def test_nested_single_wrap():
     class ChildModel(base.Model):
         root_tag = 'child'
-        leaf1 = base.Field('leaf1')
-        leaf2 = base.Field('leaf2')
+        leaf1 = base.String('leaf1')
+        leaf2 = base.String('leaf2')
 
     class ParentModel(base.Model):
         root_tag = 'root'
@@ -63,8 +72,8 @@ def test_nested_single_wrap():
 def test_nested_many():
     class ChildModel(base.Model):
         root_tag = 'child'
-        leaf1 = base.Field('leaf1')
-        leaf2 = base.Field('leaf2')
+        leaf1 = base.String('leaf1')
+        leaf2 = base.String('leaf2')
 
     class ParentModel(base.Model):
         root_tag = 'root'

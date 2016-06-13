@@ -1,11 +1,11 @@
-from .base import Field, Model
+from .base import String, Model
 
 
 class AuthInfo(Model):
     root_tag = 'mrw:AuthInfo'
 
-    franchise_code = Field('mrw:CodigoFranquicia')
-    subscriber_code = Field('mrw:CodigoAbonado')
-    departament_code = Field('mrw:CodigoDepartamento')
-    username = Field('mrw:UserName')
-    password = Field('mrw:Password')
+    franchise_code = String('mrw:CodigoFranquicia')
+    subscriber_code = String('mrw:CodigoAbonado')
+    departament_code = String('mrw:CodigoDepartamento')
+    username = String('mrw:UserName')
+    password = String('mrw:Password')
