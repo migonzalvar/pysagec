@@ -1,15 +1,7 @@
 from collections import OrderedDict as odict
 
 
-class Field:
-    def __init__(self, tag_name, default=None):
-        self.tag_name = tag_name
-        self.value = None
-        self.default = default
-
-        # This value will be set by metaclass
-        self.name = None
-
+class BaseField:
     def __get__(self, obj, objtype=None):
         if obj is None:
             return self
@@ -20,6 +12,16 @@ class Field:
         self.value = value
         obj.__dict__[self.name] = value
 
+
+class Field(BaseField):
+    def __init__(self, tag_name, default=None):
+        self.tag_name = tag_name
+        self.value = None
+        self.default = default
+
+        # This value will be set by metaclass
+        self.name = None
+
     def as_dict(self, obj):
         return {self.tag_name: self.__get__(obj)}
 
@@ -27,7 +29,7 @@ class Field:
         return '<Field name={!r}>'.format(self.name)
 
 
-class Nested:
+class Nested(BaseField):
     def __init__(self, tag_name, model, unwrap=False, many=False):
         assert (
             not (many and unwrap),
@@ -43,16 +45,6 @@ class Nested:
 
         # This value will be set by metaclass
         self.name = None
-
-    def __get__(self, obj, objtype=None):
-        if obj is None:
-            return self
-        else:
-            return obj.__dict__.get(self.name, self.default)
-
-    def __set__(self, obj, value):
-        self.value = value
-        obj.__dict__[self.name] = value
 
     def as_dict(self, obj):
         data = self.__get__(obj)
