@@ -27,3 +27,50 @@ def test_model_default():
 
     model = MyModel()
     assert model.prop == 'x'
+
+
+def test_nested_single_unwrap():
+    class ChildModel(base.Model):
+        root_tag = None
+        leaf1 = base.Field('leaf1')
+        leaf2 = base.Field('leaf2')
+
+    class ParentModel(base.Model):
+        root_tag = 'root'
+        prop = base.Nested('tag', ChildModel, unwrap=True)
+
+    model = ParentModel()
+    expected = {'root': [{'tag': [{'leaf1': None}, {'leaf2': None}]}]}
+    assert expected == model.as_dict()
+
+
+def test_nested_single_wrap():
+    class ChildModel(base.Model):
+        root_tag = 'child'
+        leaf1 = base.Field('leaf1')
+        leaf2 = base.Field('leaf2')
+
+    class ParentModel(base.Model):
+        root_tag = 'root'
+        prop = base.Nested('tag', ChildModel, unwrap=False)
+
+    model = ParentModel()
+    expected_nested = {'child': [{'leaf1': None}, {'leaf2': None}]}
+    expected = {'root': [{'tag': expected_nested}]}
+    assert expected == model.as_dict()
+
+
+def test_nested_many():
+    class ChildModel(base.Model):
+        root_tag = 'child'
+        leaf1 = base.Field('leaf1')
+        leaf2 = base.Field('leaf2')
+
+    class ParentModel(base.Model):
+        root_tag = 'root'
+        prop = base.Nested('tag', ChildModel, many=True)
+
+    model = ParentModel()
+    expected_nested = [{'child': [{'leaf1': None}, {'leaf2': None}]}]
+    expected = {'root': [{'tag': expected_nested}]}
+    assert expected == model.as_dict()
