@@ -1,6 +1,10 @@
+import logging
 from urllib.request import Request, urlopen
 
 from .renderers import XMLRenderer
+
+
+logger = logging.getLogger('pysagec')
 
 
 class Client:

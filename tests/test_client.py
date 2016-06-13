@@ -19,6 +19,9 @@ class MockModel:
 
 @pytest.fixture
 def test_client():
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
+
     url = os.environ.get(
         'TEST_URL',
         '//user:pass@example.com/?franchise=12&subscriber=34&department=56'
