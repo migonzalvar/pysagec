@@ -4,7 +4,7 @@ from urllib.request import Request, urlopen
 from .renderers import XMLRenderer
 
 
-logger = logging.getLogger('pysagec')
+logger = logging.getLogger(__name__)
 
 
 class Client:
@@ -30,7 +30,7 @@ class Client:
             ('mrw', 'http://www.mrw.es/'),
         ]
         data = self.renderer.render({'soap:Envelope': data}, namespaces)
-
+        logger.debug('Sending %s', data)
         headers = {'Content-type': 'application/soap+xml; charset=utf-8'}
         return Request(self.base_url, data, headers, method='POST')
 
@@ -38,5 +38,6 @@ class Client:
         req = self.make_http_request(pickup_info, service_info)
         with urlopen(req) as response:
             body = response.read()
+            logger.debug('Received %s', body)
             body = body.decode('utf-8')
             return body

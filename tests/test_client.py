@@ -33,6 +33,7 @@ def test_client():
     hostname = url.hostname
     kwargs = {
         'username': url.username,
+        'password': url.password,
         'franchise_code': key_or_none(qs, 'franchise'),
         'subscriber_code': key_or_none(qs, 'subscriber'),
         'departament_code': key_or_none(qs, 'department'),
@@ -60,4 +61,4 @@ def test_send(test_client):
     pickup_info = PickupInfo()
     service_info = ServiceInfo()
     body = test_client.send(pickup_info, service_info)
-    print(body)
+    assert isinstance(body, str)
