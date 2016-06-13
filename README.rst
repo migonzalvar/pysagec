@@ -10,6 +10,9 @@ pysagec
 
 Python client to SAGEC MRW webservices.
 
+This is a work in progress. Methods and fields are not comprehensive but a subset
+of the most used.
+
 Change log
 ==========
 
