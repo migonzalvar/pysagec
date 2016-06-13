@@ -6,7 +6,7 @@ from pysagec.renderers import XMLRenderer, RenderError
 def test_xml_renderer_simple():
     renderer = XMLRenderer()
     stream = renderer.render({'root': None})
-    assert '<?xml version="1.0" encoding="utf-8"?>\n<root></root>' == stream
+    assert b'<?xml version="1.0" encoding="utf-8"?>\n<root></root>' == stream
 
 
 def test_xml_renderer_nested():
@@ -14,10 +14,10 @@ def test_xml_renderer_nested():
     data = {'root': {'children': [{'child1': 'Mike'}, {'child2': 'Liza'}]}}
     stream = renderer.render(data)
     assert (
-        '<?xml version="1.0" encoding="utf-8"?>\n'
-        '<root>'
-        '<children><child1>Mike</child1><child2>Liza</child2></children>'
-        '</root>'
+        b'<?xml version="1.0" encoding="utf-8"?>\n'
+        b'<root>'
+        b'<children><child1>Mike</child1><child2>Liza</child2></children>'
+        b'</root>'
     ) == stream
 
 
@@ -26,8 +26,8 @@ def test_xml_renderer_boolean():
     data = {'root': [{'yes': True}, {'no': False}]}
     stream = renderer.render(data)
     assert (
-        '<?xml version="1.0" encoding="utf-8"?>\n'
-        '<root><yes>true</yes><no>false</no></root>'
+        b'<?xml version="1.0" encoding="utf-8"?>\n'
+        b'<root><yes>true</yes><no>false</no></root>'
     ) == stream
 
 
@@ -48,6 +48,6 @@ def test_xml_renderer_namespaces():
     namespaces = [('foo', 'http://example.com/ns')]
     stream = renderer.render({'root': None}, namespaces=namespaces)
     assert (
-        '<?xml version="1.0" encoding="utf-8"?>\n'
-        '<root xmlns:foo="http://example.com/ns"></root>'
+        b'<?xml version="1.0" encoding="utf-8"?>\n'
+        b'<root xmlns:foo="http://example.com/ns"></root>'
     ) == stream

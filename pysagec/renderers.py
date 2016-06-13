@@ -1,4 +1,4 @@
-from io import StringIO
+from io import BytesIO
 from xml.sax.saxutils import XMLGenerator
 
 
@@ -9,7 +9,7 @@ class RenderError(Exception):
 class XMLRenderer:
     def render(self, data, namespaces=None):
         namespaces = namespaces or []
-        stream = StringIO()
+        stream = BytesIO()
 
         xml = XMLGenerator(stream, encoding='utf-8')
         xml.startDocument()
