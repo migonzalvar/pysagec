@@ -2,20 +2,27 @@ import os
 import pytest
 
 from pysagec import Client
+from pysagec.models import AuthInfo, PickupInfo, ServiceInfo
+
+
+class MockModel:
+    def as_dict(self):
+        return {}
 
 
 @pytest.fixture
-def client():
-    return Client()
+def test_client():
+    return Client('sagec-test.mrw.es', AuthInfo())
 
 
 def test_client_init():
-    sagec = Client('example.com')
-    assert sagec.base_url == 'http://example.com/MRWEnvio.asmx'
+    client = Client('example.com', MockModel())
+    assert client.base_url == 'http://example.com/MRWEnvio.asmx'
 
 
-def test_client_make_http_request(client):
-    req = client.make_http_request()
+def test_client_make_http_request():
+    client = Client('example.com', MockModel())
+    req = client.make_http_request(MockModel(), MockModel())
     assert req.get_method() == 'POST'
 
 
@@ -23,6 +30,8 @@ def test_client_make_http_request(client):
     os.environ.get('TEST_PRE') != 'true',
     reason='TEST_PRE=true is no set',
 )
-def test_send(client):
-    body = client.send()
+def test_send(test_client):
+    pickup_info = PickupInfo()
+    service_info = ServiceInfo()
+    body = test_client.send(pickup_info, service_info)
     print(body)
