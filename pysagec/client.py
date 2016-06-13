@@ -10,17 +10,17 @@ class Client:
         self.renderer = XMLRenderer()
 
     def make_http_request(self, pickup_info, service_info):
-        data = {
-            'soap:Header': self.auth_info.as_dict(),
-            'soap:Body': {
+        data = [
+            {'soap:Header': self.auth_info.as_dict()},
+            {'soap:Body': {
                 'mrw:TransmEnvio': {
                     'mrw:request': [
                         pickup_info.as_dict(),
                         service_info.as_dict(),
                     ]
-                }
-            }
-        }
+                },
+            }},
+        ]
         namespaces = [
             ('soap', 'http://www.w3.org/2003/05/soap-envelope'),
             ('mrw', 'http://www.mrw.es/'),
