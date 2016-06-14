@@ -65,9 +65,6 @@ class Nested(Field):
             }
 
         value = data.as_dict()
-        if self.ignore_if_none and value is None:
-            return Empty
-
         if self.unwrap:
             return {self.tag_name: value[self.model.root_tag]}
 
