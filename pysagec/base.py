@@ -20,11 +20,11 @@ class Field:
         self.value = value
         obj.__dict__[self.name] = value
 
-
-class String(Field):
     def as_dict(self, obj):
         return {self.tag_name: self.__get__(obj)}
 
+
+class String(Field):
     def __repr__(self):
         return '<String name={!r}>'.format(self.name)
 
@@ -59,7 +59,7 @@ class ModelMeta(type):
     def __new__(mcs, clsname, bases, clsdict):
         fields = []
         for name, value in clsdict.items():
-            if isinstance(value, (String, Nested)):
+            if isinstance(value, Field):
                 value.name = name  # Init `Field.name`
                 fields.append(value)
         clsdict['fields'] = fields
