@@ -29,7 +29,7 @@ class PickupInfo(Model):
     vat_number = String('mrw:Nif')
     recipient_name = String('mrw:Nombre')
     recipient_phone_number = String('mrw:Telefono')
-    contact__phone_number = String('mrw:Contacto')
+    contact_phone_number = String('mrw:Contacto')
     contact_name = String('mrw:ALaAtencionDe')
     comments = String('mrw:Observaciones')
 
