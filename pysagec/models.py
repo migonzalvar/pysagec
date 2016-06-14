@@ -6,7 +6,7 @@ class AuthInfo(Model):
 
     franchise_code = String('mrw:CodigoFranquicia')
     subscriber_code = String('mrw:CodigoAbonado')
-    departament_code = String('mrw:CodigoDepartamento')
+    departament_code = String('mrw:CodigoDepartamento', ignore_if_none=True)
     username = String('mrw:UserName')
     password = String('mrw:Password')
 
