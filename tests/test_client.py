@@ -5,7 +5,7 @@ from urllib.parse import urlsplit, parse_qs
 import pytest
 
 from pysagec import Client
-from pysagec.models import AuthInfo, PickupInfo, ServiceInfo
+from pysagec.models import AuthInfo, Address, PickupInfo, ServiceInfo
 
 
 def key_or_none(qs, key):
@@ -66,7 +66,16 @@ def test_send_with_mock():
     reason='TEST_URL environment is no set',
 )
 def test_send(test_client):
+    address = Address()
+    address.street_name = 'Plaza de España'
+    address.postal_code = '36001'
+    address.city = 'Pontevedra'
     pickup_info = PickupInfo()
+    pickup_info.pickup_address = address
+    pickup_info.recipient_name = 'Juan Pérez'
     service_info = ServiceInfo()
+    service_info.number_of_packages = 1
+    service_info.date = '01/08/2016'
+    service_info.service_code = '0000'
     body = test_client.send(pickup_info, service_info)
     assert isinstance(body, str)
