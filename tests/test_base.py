@@ -38,6 +38,31 @@ def test_model_default():
     assert model.prop == 'x'
 
 
+def test_field_ignore_if_none_do_not_show_field():
+    class MyModel(base.Model):
+        root_tag = 'root'
+        prop1 = base.Field('tag1', default=None, ignore_if_none=False)
+        prop2 = base.Field('tag2', default=None, ignore_if_none=True)
+
+    model = MyModel()
+    assert {'root': [{'tag1': None}]} == model.as_dict()
+
+
+def test_nested_ignore_if_none_do_not_show_field():
+    class ChildModel(base.Model):
+        root_tag = None
+        leaf1 = base.String('leaf1')
+        leaf2 = base.String('leaf2')
+
+    class ParentModel(base.Model):
+        root_tag = 'root'
+        prop = base.Nested('tag', ChildModel, unwrap=True, ignore_if_none=True)
+
+    model = ParentModel(prop=None)
+    expected = {'root': []}
+    assert expected == model.as_dict()
+
+
 def test_nested_single_unwrap():
     class ChildModel(base.Model):
         root_tag = None
