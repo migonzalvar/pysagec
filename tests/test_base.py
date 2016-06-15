@@ -108,3 +108,47 @@ def test_nested_many():
     expected_nested = [{'child': [{'leaf1': None}, {'leaf2': None}]}]
     expected = {'root': [{'tag': expected_nested}]}
     assert expected == model.as_dict()
+
+
+def test_model_eq():
+    class MyModel(base.Model):
+        root_tag = 'root'
+        prop = base.String('tag')
+
+    m1 = MyModel(prop='42')
+    m2 = MyModel(prop='42')
+    m3 = MyModel(prop='2')
+    assert m1 is not m2
+    assert m1 == m2
+    assert m1 != m3
+
+
+def test_model_from_dict():
+    class MyModel(base.Model):
+        root_tag = 'root'
+        prop = base.String('tag')
+
+    data = {'root': [{'prop': '42'}]}
+    model = MyModel.from_dict(data)
+
+    expected_model = MyModel(prop='42')
+    assert expected_model.prop == model.prop
+    assert expected_model == model
+
+
+def test_model_nested_from_dict():
+    class ChildModel(base.Model):
+        root_tag = 'child'
+        leaf1 = base.String('leaf1')
+        leaf2 = base.String('leaf2')
+
+    class ParentModel(base.Model):
+        root_tag = 'root'
+        prop = base.Nested('tag', ChildModel, unwrap=False)
+
+    nested = {'child': [{'leaf1': '42'}, {'leaf2': '3'}]}
+    data = {'root': [{'tag': nested}]}
+    model = ParentModel.from_dict(data)
+
+    expected_model = ParentModel(tag=[ChildModel(leaf1='42', leaf2='3')])
+    assert expected_model == model

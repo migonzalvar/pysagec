@@ -95,6 +95,13 @@ class ModelMeta(type):
 class Model(metaclass=ModelMeta):
     root_tag = 'root'
 
+    @classmethod
+    def from_dict(cls, data):
+        kwargs = {}
+        for el in data[cls.root_tag]:
+            kwargs.update(el)
+        return cls(**kwargs)
+
     def __init__(self, **kwargs):
         for name, value in kwargs.items():
             setattr(self, name, value)
@@ -103,3 +110,6 @@ class Model(metaclass=ModelMeta):
         return {
             self.root_tag: filter_empty([f.as_dict(self) for f in self.fields])
         }
+
+    def __eq__(self, other):
+        return self.as_dict() == other.as_dict()
