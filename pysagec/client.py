@@ -14,15 +14,13 @@ class Client:
         self.parser = XMLParser()
         self.renderer = XMLRenderer()
 
-    def make_http_request(self, pickup_info, service_info):
+    def make_http_request(self, tag='mrw:TransmEnvio', models_=None):
+        models_ = models_ or []
         data = [
             {'soap:Header': self.auth_info.as_dict()},
             {'soap:Body': {
-                'mrw:TransmEnvio': {
-                    'mrw:request': [
-                        pickup_info.as_dict(),
-                        service_info.as_dict(),
-                    ]
+                tag: {
+                    'mrw:request': [model.as_dict() for model in models_]
                 },
             }},
         ]
@@ -36,7 +34,8 @@ class Client:
         return Request(self.base_url, data, headers, method='POST')
 
     def send(self, pickup_info, service_info):
-        req = self.make_http_request(pickup_info, service_info)
+        models_ = [pickup_info, service_info]
+        req = self.make_http_request('mrw:TransmEnvio', models_)
         with urlopen(req) as response:
             body = response.read()
             logger.debug('Received %s', body)
