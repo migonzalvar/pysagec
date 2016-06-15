@@ -25,7 +25,7 @@ class XMLParser:
         if len(children) > 0:
             data = []
             for child in children:
-                data.append({child.tag: self._xml_convert(child)})
+                data.append({child.tag: self._xml_convert(child, unwrap=True)})
             return {element.tag: data} if not unwrap else data
 
         # len(children) == 0

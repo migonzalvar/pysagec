@@ -59,6 +59,20 @@ def test_parser_many_children():
     assert {'root': [{'tag1': 'Value 1'}, {'tag2': 'Value 2'}]} == data
 
 
+def test_parser_nested():
+    stream = (
+        b'<?xml version="1.0" encoding="utf-8"?>\n'
+        b'<root><children>'
+        b'<child1>Value 1</child1><child2>Value 2</child2>'
+        b'</children></root>'
+    )
+    parser = parsers.XMLParser()
+    data = parser.parse(stream)
+    assert ({'root': [{
+        'children': [{'child1': 'Value 1'}, {'child2': 'Value 2'}]}
+    ]}) == data
+
+
 def test_parser_error():
     bad_stream = (
         b'<?xml version="1.0" encoding="utf-8"?>\n'
