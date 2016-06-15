@@ -62,3 +62,15 @@ class ServiceInfo(Model):
     return_back = String('mrw:Retorno', default='N')
     immediate_confirmation = String('mrw:ConfirmacionInmediata', default='N')
     reimbursement = String('mrw:Reembolso', default='N')
+
+
+class GetLabel(Model):
+    root_tag = None
+
+    shipping_number = String('mrw:NumeroEnvio')
+    delimiter = String('mrw:SeparadorNumerosEnvio', ignore_if_none=True)
+    date_range_start = String('mrw:FechaInicioEnvio', ignore_if_none=True)
+    date_range_end = String('mrw:FechaFinEnvio', ignore_if_none=True)
+    label_type = String('mrw:TipoEtiquetaEnvio', default='0')
+    top_margin = String('mrw:ReportTopMargin', default='1100')
+    left_margin = String('mrw:ReportLeftMargin', default=650)
