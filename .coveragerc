@@ -6,3 +6,4 @@ source =
 
 [report]
 show_missing = True
+omit = tests/test_functional.py
