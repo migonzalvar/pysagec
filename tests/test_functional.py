@@ -55,4 +55,4 @@ def test_send(pre_production_client):
     service_info.service_code = '0000'
 
     body = pre_production_client.send(pickup_info, service_info)
-    assert isinstance(body, str)
+    assert isinstance(body, dict)

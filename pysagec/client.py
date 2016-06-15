@@ -42,4 +42,21 @@ class Client:
             logger.debug('Received %s', body)
 
         response = self.parser.parse(body)
-        return response
+
+        # WIP: move to a model Model
+
+        def soap(tag):
+            return '{http://www.w3.org/2003/05/soap-envelope}%s' % tag
+
+        def mrw(tag):
+            return '{http://www.mrw.es/}%s' % tag
+
+        shipping_number = (
+            response[soap('Envelope')][0]
+            [soap('Body')][0]
+            [mrw('TransmEnvioResponse')][0]
+            [mrw('TransmEnvioResult')][3]
+            [mrw('NumeroEnvio')]
+        )
+
+        return {'shipping_number': shipping_number}

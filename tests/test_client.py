@@ -42,5 +42,6 @@ def test_send_with_mock():
         response = urlopen_.return_value.__enter__.return_value
         response.read.return_value = body_response
         client = Client('example.com', MockModel())
-        client.send(MockModel(), MockModel())
+        response = client.send(MockModel(), MockModel())
     assert urlopen_.called
+    assert '033050000050' == response['shipping_number']
