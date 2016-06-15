@@ -2,7 +2,7 @@ import logging
 from urllib.request import Request, urlopen
 
 from .renderers import XMLRenderer
-
+from .parsers import XMLParser
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +11,7 @@ class Client:
     def __init__(self, hostname, auth_info):
         self.base_url = 'http://{}/MRWEnvio.asmx'.format(hostname)
         self.auth_info = auth_info
+        self.parser = XMLParser()
         self.renderer = XMLRenderer()
 
     def make_http_request(self, pickup_info, service_info):
@@ -39,5 +40,6 @@ class Client:
         with urlopen(req) as response:
             body = response.read()
             logger.debug('Received %s', body)
-            body = body.decode('utf-8')
-            return body
+
+        response = self.parser.parse(body)
+        return response
