@@ -152,3 +152,13 @@ def test_model_nested_from_dict():
 
     expected_model = ParentModel(tag=[ChildModel(leaf1='42', leaf2='3')])
     assert expected_model == model
+
+
+def test_model_with_root_tag_none():
+    class MyModel(base.Model):
+        root_tag = None
+        prop1 = base.String('tag1')
+        prop2 = base.String('tag2')
+
+    model = MyModel(prop1='1', prop2='two')
+    assert {None: [{'tag1': '1'}, {'tag2': 'two'}]} == model.as_dict()
