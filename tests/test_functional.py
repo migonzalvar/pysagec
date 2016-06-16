@@ -2,7 +2,7 @@ import os
 from urllib.parse import urlsplit, parse_qs
 
 from pysagec import Client
-from pysagec.models import AuthInfo, Address, PickupInfo, ServiceInfo
+from pysagec import models
 
 import pytest
 
@@ -33,7 +33,7 @@ def pre_production_client():
         'subscriber_code': key_or_none(qs, 'subscriber'),
         'departament_code': key_or_none(qs, 'department'),
     }
-    auth_info = AuthInfo(**kwargs)
+    auth_info = models.AuthInfo(**kwargs)
     return Client(hostname, auth_info)
 
 
@@ -42,14 +42,14 @@ def pre_production_client():
     reason='TEST_URL environment is no set',
 )
 def test_send(pre_production_client):
-    address = Address()
+    address = models.Address()
     address.street_name = 'Plaza de España'
     address.postal_code = '36001'
     address.city = 'Pontevedra'
-    pickup_info = PickupInfo()
+    pickup_info = models.PickupInfo()
     pickup_info.pickup_address = address
     pickup_info.recipient_name = 'Juan Pérez'
-    service_info = ServiceInfo()
+    service_info = models.ServiceInfo()
     service_info.number_of_packages = 1
     service_info.date = '01/08/2016'
     service_info.service_code = '0000'
