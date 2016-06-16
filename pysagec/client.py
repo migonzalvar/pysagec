@@ -14,8 +14,9 @@ class Client:
         self.parser = XMLParser()
         self.renderer = XMLRenderer()
 
-    def make_http_request(self, tag='mrw:TransmEnvio', models_=None):
+    def make_http_request(self, tag='mrw:TransmEnvio', models_=None, extra_headers=None):
         models_ = models_ or []
+        extra_headers = extra_headers or {}
         data = [
             {'soap:Header': self.auth_info.as_dict()},
             {'soap:Body': {
@@ -31,6 +32,7 @@ class Client:
         data = self.renderer.render({'soap:Envelope': data}, namespaces)
         logger.debug('Sending %s', data)
         headers = {'Content-type': 'application/soap+xml; charset=utf-8'}
+        headers.update(extra_headers)
         return Request(self.base_url, data, headers, method='POST')
 
     def send(self, pickup_info, service_info):
