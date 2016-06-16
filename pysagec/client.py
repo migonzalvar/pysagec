@@ -14,14 +14,14 @@ class Client:
         self.parser = XMLParser()
         self.renderer = XMLRenderer()
 
-    def make_http_request(self, tag='mrw:TransmEnvio', models_=None, extra_headers=None):
-        models_ = models_ or []
+    def make_http_request(self, tag, request_data, extra_headers=None):
+        # TODO: insert header 'SOAPAction: "http://www.mrw.es/GetEtiquetaEnvio"
         extra_headers = extra_headers or {}
         data = [
             {'soap:Header': self.auth_info.as_dict()},
             {'soap:Body': {
                 tag: {
-                    'mrw:request': [model.as_dict() for model in models_]
+                    'mrw:request': request_data
                 },
             }},
         ]
@@ -36,8 +36,8 @@ class Client:
         return Request(self.base_url, data, headers, method='POST')
 
     def send(self, pickup_info, service_info):
-        models_ = [pickup_info, service_info]
-        req = self.make_http_request('mrw:TransmEnvio', models_)
+        request_data = [pickup_info.as_dict(), service_info.as_dict()]
+        req = self.make_http_request('mrw:TransmEnvio', request_data)
         with urlopen(req) as response:
             body = response.read()
             logger.debug('Received %s', body)
@@ -63,9 +63,8 @@ class Client:
         return {'shipping_number': shipping_number}
 
     def get_label(self, get_label_request):
-        models_ = [get_label_request]
-        headers = {'SOAPAction': "http://www.mrw.es/GetEtiquetaEnvio"}
-        req = self.make_http_request('mrw:TransmEnvio', models_, headers)
+        request_data = [get_label_request.as_dict()[None]]
+        req = self.make_http_request('mrw:GetEtiquetaEnvio', request_data)
         with urlopen(req) as response:
             body = response.read()
             logger.debug('Received %s', body)

@@ -15,7 +15,7 @@ def test_client_init():
 
 def test_client_make_http_request():
     client = Client('example.com', MockModel())
-    req = client.make_http_request('tag', [MockModel(), MockModel()])
+    req = client.make_http_request('tag', {})
     assert req.get_method() == 'POST'
 
 
