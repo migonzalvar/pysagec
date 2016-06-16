@@ -61,3 +61,13 @@ class Client:
         )
 
         return {'shipping_number': shipping_number}
+
+    def get_label(self, get_label_request):
+        models_ = [get_label_request]
+        headers = {'SOAPAction': "http://www.mrw.es/GetEtiquetaEnvio"}
+        req = self.make_http_request('mrw:TransmEnvio', models_, headers)
+        with urlopen(req) as response:
+            body = response.read()
+            logger.debug('Received %s', body)
+
+        return body
