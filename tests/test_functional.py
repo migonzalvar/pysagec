@@ -54,19 +54,13 @@ def test_send(pre_production_client):
     service_info.date = '01/08/2016'
     service_info.service_code = '0000'
 
-    body = pre_production_client.send(pickup_info, service_info)
-    assert isinstance(body, dict)
+    response = pre_production_client.send(pickup_info, service_info)
+    print(repr(response))
+    assert isinstance(response, dict)
+    assert 'shipping_number' in response
 
-
-@pytest.mark.skipif(
-    not os.environ.get('TEST_URL', False),
-    reason='TEST_URL environment is no set',
-)
-def test_get_label(pre_production_client):
-    request = models.LabelRequest()
-    request.shipping_number = '033050000050'
     get_label = models.GetLabel()
-    get_label.request = request
+    get_label.shipping_number = response['shipping_number']
 
     response = pre_production_client.get_label(get_label)
     print(repr(response))
