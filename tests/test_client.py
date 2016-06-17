@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from pysagec import Client
 
@@ -45,3 +45,31 @@ def test_send_with_mock():
         response = client.send(MockModel(), MockModel())
     assert urlopen_.called
     assert '033050000050' == response['shipping_number']
+
+
+def test_get_label_with_mock():
+    body_response = (
+        b'<?xml version="1.0" encoding="utf-8"?>'
+        b'<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"'
+        b' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
+        b' xmlns:xsd="http://www.w3.org/2001/XMLSchema">'
+        b'<soap:Body>'
+        b'<GetEtiquetaEnvioResponse xmlns="http://www.mrw.es/">'
+        b'<GetEtiquetaEnvioResult>'
+        b'<Estado>1</Estado>'
+        b'<Mensaje/>'
+        b'<EtiquetaFile>AA==</EtiquetaFile>'
+        b'</GetEtiquetaEnvioResult>'
+        b'</GetEtiquetaEnvioResponse>'
+        b'</soap:Body>'
+        b'</soap:Envelope>'
+    )
+    with patch('pysagec.client.urlopen', read=b'a') as urlopen_:
+        response = urlopen_.return_value.__enter__.return_value
+        response.read.return_value = body_response
+        client = Client('example.com', MockModel())
+        get_label_request = MagicMock()
+        get_label_request.as_dict.return_value = {None: []}
+        response = client.get_label(get_label_request)
+    assert urlopen_.called
+    assert 'AA==' == response['file']
