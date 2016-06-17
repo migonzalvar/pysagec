@@ -1,8 +1,11 @@
 import os
+import subprocess
+import sys
 from urllib.parse import urlsplit, parse_qs
 
 from pysagec import Client
 from pysagec import models
+from pysagec import utils
 
 import pytest
 
@@ -10,6 +13,14 @@ import pytest
 def key_or_none(qs, key):
     iterable = qs.get(key, [None])
     return iterable[0]
+
+
+def launch(filename):
+    if sys.platform == "win32":
+        os.startfile(filename)
+    else:
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])
 
 
 @pytest.fixture
@@ -65,3 +76,7 @@ def test_send(pre_production_client):
     response = pre_production_client.get_label(get_label)
     print(repr(response))
     assert isinstance(response, dict)
+    assert 'file' in response
+
+    utils.base64_to_file(response['file'], 'label.pdf')
+    launch('label.pdf')
