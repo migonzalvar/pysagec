@@ -7,6 +7,14 @@ from .parsers import XMLParser
 logger = logging.getLogger(__name__)
 
 
+def soap(tag):
+    return '{http://www.w3.org/2003/05/soap-envelope}%s' % tag
+
+
+def mrw(tag):
+    return '{http://www.mrw.es/}%s' % tag
+
+
 class Client:
     def __init__(self, hostname, auth_info):
         self.base_url = 'http://{}/MRWEnvio.asmx'.format(hostname)
@@ -46,12 +54,6 @@ class Client:
 
         # WIP: move to a model Model
 
-        def soap(tag):
-            return '{http://www.w3.org/2003/05/soap-envelope}%s' % tag
-
-        def mrw(tag):
-            return '{http://www.mrw.es/}%s' % tag
-
         shipping_number = (
             response[soap('Envelope')][0]
             [soap('Body')][0]
@@ -69,4 +71,12 @@ class Client:
             body = response.read()
             logger.debug('Received %s', body)
 
-        return body
+        response = self.parser.parse(body)
+        pdf = (
+            response[soap('Envelope')][0]
+            [soap('Body')][0]
+            [mrw('GetEtiquetaEnvioResponse')][0]
+            [mrw('GetEtiquetaEnvioResult')][2]
+            [mrw('EtiquetaFile')]
+        )
+        return {'file': pdf}
