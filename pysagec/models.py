@@ -1,4 +1,11 @@
+from urllib.parse import urlsplit, parse_qs
+
 from .base import Model, Nested, String
+
+
+def key_or_none(qs, key):
+    iterable = qs.get(key, [None])
+    return iterable[0]
 
 
 class AuthInfo(Model):
@@ -9,6 +16,18 @@ class AuthInfo(Model):
     departament_code = String('mrw:CodigoDepartamento', ignore_if_none=True)
     username = String('mrw:UserName')
     password = String('mrw:Password')
+
+    @classmethod
+    def from_url(cls, url):
+        url = urlsplit(url)
+        qs = parse_qs(url.query)
+        return cls(
+            username=url.username,
+            password=url.password,
+            franchise_code=key_or_none(qs, 'franchise'),
+            subscriber_code=key_or_none(qs, 'subscriber'),
+            departament_code=key_or_none(qs, 'department')
+        )
 
 
 class Address(Model):

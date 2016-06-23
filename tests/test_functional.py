@@ -1,18 +1,12 @@
 import os
 import subprocess
 import sys
-from urllib.parse import urlsplit, parse_qs
 
 from pysagec import Client
 from pysagec import models
 from pysagec import utils
 
 import pytest
-
-
-def key_or_none(qs, key):
-    iterable = qs.get(key, [None])
-    return iterable[0]
 
 
 def launch(filename):
@@ -33,18 +27,8 @@ def pre_production_client():
         '//user:pass@example.com/?franchise=12&subscriber=34&department=56'
     )
 
-    url = urlsplit(url)
-    qs = parse_qs(url.query)
-
-    hostname = url.hostname
-    kwargs = {
-        'username': url.username,
-        'password': url.password,
-        'franchise_code': key_or_none(qs, 'franchise'),
-        'subscriber_code': key_or_none(qs, 'subscriber'),
-        'departament_code': key_or_none(qs, 'department'),
-    }
-    auth_info = models.AuthInfo(**kwargs)
+    hostname = utils.get_hostname_from_url(url)
+    auth_info = models.AuthInfo.from_url(url)
     return Client(hostname, auth_info)
 
 
