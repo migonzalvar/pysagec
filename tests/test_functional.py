@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from pysagec import Client
+from pysagec import create_client
 from pysagec import models
 from pysagec import utils
 
@@ -26,10 +26,7 @@ def pre_production_client():
         'TEST_URL',
         '//user:pass@example.com/?franchise=12&subscriber=34&department=56'
     )
-
-    hostname = utils.get_hostname_from_url(url)
-    auth_info = models.AuthInfo.from_url(url)
-    return Client(hostname, auth_info)
+    return create_client(url)
 
 
 @pytest.mark.skipif(
