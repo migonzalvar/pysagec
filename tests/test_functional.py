@@ -48,16 +48,16 @@ def test_send(pre_production_client):
 
     response = pre_production_client.send(pickup_info, service_info)
     print(repr(response))
-    assert isinstance(response, dict)
-    assert 'shipping_number' in response
+    assert isinstance(response, models.SendResponseResult)
+    assert hasattr(response, 'shipping_number')
 
     get_label = models.GetLabel()
-    get_label.shipping_number = response['shipping_number']
+    get_label.shipping_number = response.shipping_number
 
     response = pre_production_client.get_label(get_label)
     print(repr(response))
-    assert isinstance(response, dict)
-    assert 'file' in response
+    assert isinstance(response, models.LabelResponseResult)
+    assert hasattr(response, 'file')
 
-    utils.base64_to_file(response['file'], 'label.pdf')
+    utils.base64_to_file(response.file, 'label.pdf')
     launch('label.pdf')
