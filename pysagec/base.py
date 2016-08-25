@@ -35,6 +35,9 @@ class Field:
             return Empty
         return {self.tag_name: value}
 
+    def to_data(self, value):
+        return value
+
 
 class String(Field):
     def __repr__(self):
@@ -70,6 +73,11 @@ class Nested(Field):
 
         return {self.tag_name: value}
 
+    def to_data(self, value):
+        assert self.many is False, '`many=True` not supported'
+        raw_data = {self.model.root_tag: value}
+        return self.model.from_raw(raw_data)
+
     def __repr__(self):
         return '<Nested name={!r} model={!r}>'.format(self.name, self.model)
 
@@ -101,6 +109,25 @@ class Model(metaclass=ModelMeta):
         for el in data[cls.root_tag]:
             kwargs.update(el)
         return cls(**kwargs)
+
+    @classmethod
+    def from_raw(cls, raw):
+        raw_fields = raw[cls.root_tag]
+        tags = {field.tag_name: field for field in cls.fields}
+        data = {}
+        for raw_field in raw_fields:
+            if len(raw_field) != 1:
+                raise ValueError('Raw structure is not valid')
+            tag = list(raw_field.keys())[0]
+            try:
+                field = tags[tag]
+            except KeyError:
+                continue
+            value = raw_field[tag]
+            data.update({field.name: field.to_data(value)})
+
+        print(data)
+        return cls(**data)
 
     def __init__(self, **kwargs):
         for name, value in kwargs.items():

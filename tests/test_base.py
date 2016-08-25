@@ -162,3 +162,33 @@ def test_model_with_root_tag_none():
 
     model = MyModel(prop1='1', prop2='two')
     assert {None: [{'tag1': '1'}, {'tag2': 'two'}]} == model.as_dict()
+
+
+def test_model_from_raw():
+    class MyModel(base.Model):
+        root_tag = 'root'
+        prop = base.String('tag')
+
+    raw = {'root': [{'tag': '42'}]}
+    model = MyModel.from_raw(raw)
+
+    expected_model = MyModel(prop='42')
+    assert expected_model.prop == model.prop
+    assert expected_model == model
+
+
+def test_model_from_raw_nested():
+    class ChildModel(base.Model):
+        root_tag = None
+        leaf1 = base.String('tag1')
+        leaf2 = base.String('tag2')
+
+    class ParentModel(base.Model):
+        root_tag = 'root'
+        prop = base.Nested('tag', ChildModel, unwrap=True)
+
+    raw = {'root': [{'tag': [{'tag1': '1'}, {'tag2': 'two'}]}]}
+    model = ParentModel.from_raw(raw)
+
+    expected_model = ParentModel(prop=ChildModel(leaf1='1', leaf2='two'))
+    assert expected_model == model
