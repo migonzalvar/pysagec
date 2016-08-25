@@ -66,15 +66,15 @@ def test_nested_ignore_if_none_do_not_show_field():
 def test_nested_single_unwrap():
     class ChildModel(base.Model):
         root_tag = None
-        leaf1 = base.String('leaf1')
-        leaf2 = base.String('leaf2')
+        leaf1 = base.String('tag1')
+        leaf2 = base.String('tag2')
 
     class ParentModel(base.Model):
         root_tag = 'root'
         prop = base.Nested('tag', ChildModel, unwrap=True)
 
     model = ParentModel()
-    expected = {'root': [{'tag': [{'leaf1': None}, {'leaf2': None}]}]}
+    expected = {'root': [{'tag': [{'tag1': None}, {'tag2': None}]}]}
     assert expected == model.as_dict()
 
 
