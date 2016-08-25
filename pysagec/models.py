@@ -107,7 +107,11 @@ class SendResponseResult(Model):
 
 class SendResponse(Model):
     root_tag = '{http://www.mrw.es/}TransmEnvioResponse'
-    result = Nested('{http://www.mrw.es/}TransmEnvioResult', SendResponseResult, unwrap=True)
+    result = Nested(
+        '{http://www.mrw.es/}TransmEnvioResult',
+        SendResponseResult,
+        unwrap=True
+    )
 
 
 class LabelResponseResult(Model):
@@ -120,4 +124,8 @@ class LabelResponseResult(Model):
 
 class LabelResponse(Model):
     root_tag = '{http://www.mrw.es/}GetEtiquetaEnvioResponse'
-    result = Nested('{http://www.mrw.es/}GetEtiquetaEnvioResult', LabelResponseResult, unwrap=True)
+    result = Nested(
+        '{http://www.mrw.es/}GetEtiquetaEnvioResult',
+        LabelResponseResult,
+        unwrap=True
+    )
