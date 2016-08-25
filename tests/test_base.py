@@ -169,7 +169,7 @@ def test_model_from_raw():
         root_tag = 'root'
         prop = base.String('tag')
 
-    raw = {'root': [{'tag': '42'}]}
+    raw = {'root': [{'tag': '42'}, {'unknown_tag': 'x'}]}
     model = MyModel.from_raw(raw)
 
     expected_model = MyModel(prop='42')
