@@ -93,3 +93,31 @@ class GetLabel(Model):
     label_type = String('mrw:TipoEtiquetaEnvio', default='0')
     top_margin = String('mrw:ReportTopMargin', default='1100')
     left_margin = String('mrw:ReportLeftMargin', default=650)
+
+
+class SendResponseResult(Model):
+    root_tag = None
+
+    message = String('{http://www.mrw.es/}Mensaje')
+    shipping_number = String('{http://www.mrw.es/}NumeroEnvio')
+    request_number = String('{http://www.mrw.es/}NumeroSolicitud')
+    status = String('{http://www.mrw.es/}Estado')
+    url = String('{http://www.mrw.es/}Url')
+
+
+class SendResponse(Model):
+    root_tag = '{http://www.mrw.es/}TransmEnvioResponse'
+    result = Nested('{http://www.mrw.es/}TransmEnvioResult', SendResponseResult, unwrap=True)
+
+
+class LabelResponseResult(Model):
+    root_tag = None
+
+    file = String('{http://www.mrw.es/}EtiquetaFile')
+    message = String('{http://www.mrw.es/}Mensaje')
+    status = String('{http://www.mrw.es/}Estado')
+
+
+class LabelResponse(Model):
+    root_tag = '{http://www.mrw.es/}GetEtiquetaEnvioResponse'
+    result = Nested('{http://www.mrw.es/}GetEtiquetaEnvioResult', LabelResponseResult, unwrap=True)

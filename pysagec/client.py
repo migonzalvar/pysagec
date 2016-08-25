@@ -2,6 +2,7 @@ import logging
 from urllib.request import Request, urlopen
 
 from .renderers import XMLRenderer
+from .models import SendResponse, LabelResponse
 from .parsers import XMLParser
 
 logger = logging.getLogger(__name__)
@@ -51,18 +52,9 @@ class Client:
             logger.debug('Received %s', body)
 
         response = self.parser.parse(body)
-
-        # WIP: move to a model Model
-
-        shipping_number = (
-            response[soap('Envelope')][0]
-            [soap('Body')][0]
-            [mrw('TransmEnvioResponse')][0]
-            [mrw('TransmEnvioResult')][3]
-            [mrw('NumeroEnvio')]
-        )
-
-        return {'shipping_number': shipping_number}
+        message = response[soap('Envelope')][0][soap('Body')][0]
+        response_obj = SendResponse.from_raw(message)
+        return response_obj.result
 
     def get_label(self, get_label_request):
         request_data = [get_label_request.as_dict()[None]]
@@ -72,11 +64,6 @@ class Client:
             logger.debug('Received %s', body)
 
         response = self.parser.parse(body)
-        pdf = (
-            response[soap('Envelope')][0]
-            [soap('Body')][0]
-            [mrw('GetEtiquetaEnvioResponse')][0]
-            [mrw('GetEtiquetaEnvioResult')][2]
-            [mrw('EtiquetaFile')]
-        )
-        return {'file': pdf}
+        message = response[soap('Envelope')][0][soap('Body')][0]
+        response_obj = LabelResponse.from_raw(message)
+        return response_obj.result
