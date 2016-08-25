@@ -8,7 +8,7 @@ with open('README.rst') as f:
 
 setup(
     name='pysagec',
-    version='0.0.3',
+    version='0.1.0',
     url='https://github.com/migonzalvar/pysagec',
     license='MIT',
     author='Miguel Gonzalez',
