@@ -12,10 +12,6 @@ def soap(tag):
     return '{http://www.w3.org/2003/05/soap-envelope}%s' % tag
 
 
-def mrw(tag):
-    return '{http://www.mrw.es/}%s' % tag
-
-
 class Client:
     def __init__(self, hostname, auth_info):
         self.base_url = 'http://{}/MRWEnvio.asmx'.format(hostname)
