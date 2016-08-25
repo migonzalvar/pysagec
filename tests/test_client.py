@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from unittest.mock import patch, MagicMock
 
 from pysagec import Client
@@ -6,6 +7,24 @@ from pysagec import Client
 class MockModel:
     def as_dict(self):
         return {}
+
+
+class MockLabelRequest:
+    def as_dict(self):
+        return {None: []}
+
+
+@contextmanager
+def patched_client(body_response):
+    with patch('pysagec.client.urlopen', read=b'a') as urlopen_:
+        response = urlopen_.return_value.__enter__.return_value
+        response.read.return_value = body_response
+        client = Client('example.com', MockModel())
+        get_label_request = MagicMock()
+        get_label_request.as_dict.return_value = {None: []}
+        yield client
+
+    assert urlopen_.called
 
 
 def test_client_init():
@@ -38,12 +57,8 @@ def test_send_with_mock():
         b'</soap:Body>'
         b'</soap:Envelope>'
     )
-    with patch('pysagec.client.urlopen', read=b'a') as urlopen_:
-        response = urlopen_.return_value.__enter__.return_value
-        response.read.return_value = body_response
-        client = Client('example.com', MockModel())
+    with patched_client(body_response) as client:
         response = client.send(MockModel(), MockModel())
-    assert urlopen_.called
     assert '1' == response.status
     assert '033050000050' == response.shipping_number
 
@@ -65,14 +80,8 @@ def test_get_label_with_mock():
         b'</soap:Body>'
         b'</soap:Envelope>'
     )
-    with patch('pysagec.client.urlopen', read=b'a') as urlopen_:
-        response = urlopen_.return_value.__enter__.return_value
-        response.read.return_value = body_response
-        client = Client('example.com', MockModel())
-        get_label_request = MagicMock()
-        get_label_request.as_dict.return_value = {None: []}
-        response = client.get_label(get_label_request)
-    assert urlopen_.called
+    with patched_client(body_response) as client:
+        response = client.get_label(MockLabelRequest())
     assert '1' == response.status
     assert 'AA==' == response.file
 
@@ -93,12 +102,6 @@ def test_get_label_with_error_with_mock():
         b'</soap:Body>'
         b'</soap:Envelope>'
     )
-    with patch('pysagec.client.urlopen', read=b'a') as urlopen_:
-        response = urlopen_.return_value.__enter__.return_value
-        response.read.return_value = body_response
-        client = Client('example.com', MockModel())
-        get_label_request = MagicMock()
-        get_label_request.as_dict.return_value = {None: []}
-        response = client.get_label(get_label_request)
-    assert urlopen_.called
+    with patched_client(body_response) as client:
+        response = client.get_label(MockLabelRequest())
     assert '0' == response.status
