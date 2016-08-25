@@ -1,3 +1,4 @@
+import datetime as dt
 import os
 import subprocess
 import sys
@@ -43,7 +44,7 @@ def test_send(pre_production_client):
     pickup_info.recipient_name = 'Juan Pérez'
     service_info = models.ServiceInfo()
     service_info.number_of_packages = 1
-    service_info.date = '01/08/2016'
+    service_info.date = dt.date.today() + dt.timedelta(days=1)
     service_info.service_code = '0000'
 
     response = pre_production_client.send(pickup_info, service_info)
