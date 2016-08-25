@@ -1,5 +1,7 @@
 from pysagec import base
 
+import pytest
+
 
 def test_field():
     f = base.Field('tag')
@@ -175,6 +177,16 @@ def test_model_from_raw():
     expected_model = MyModel(prop='42')
     assert expected_model.prop == model.prop
     assert expected_model == model
+
+
+def test_model_from_raw_if_bad_raw():
+    class MyModel(base.Model):
+        root_tag = 'root'
+        prop = base.String('tag')
+
+    raw = {'root': [{'tag': '42', 'bad_tag': 'xx'}]}
+    with pytest.raises(ValueError):
+        model = MyModel.from_raw(raw)
 
 
 def test_model_from_raw_nested():
