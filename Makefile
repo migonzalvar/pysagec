@@ -1,7 +1,7 @@
 default: test
 
 test:
-	py.test
+	pytest
 	python setup.py check -r -s
 
 clean:
