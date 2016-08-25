@@ -186,7 +186,7 @@ def test_model_from_raw_if_bad_raw():
 
     raw = {'root': [{'tag': '42', 'bad_tag': 'xx'}]}
     with pytest.raises(ValueError):
-        model = MyModel.from_raw(raw)
+        MyModel.from_raw(raw)
 
 
 def test_model_from_raw_nested():
