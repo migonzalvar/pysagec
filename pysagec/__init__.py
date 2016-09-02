@@ -1,9 +1,12 @@
 from .client import Client
-from .models import AuthInfo
+from .models import Address, AuthInfo, Package, PickupInfo, ServiceInfo
 from .utils import get_hostname_from_url
 
 
-__all__ = ['Client', 'create_client']
+__all__ = [
+    'Address', 'Client', 'Package', 'PickupInfo', 'ServiceInfo',
+    'create_client'
+]
 
 
 def create_client(url):
