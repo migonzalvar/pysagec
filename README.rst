@@ -8,7 +8,7 @@ pysagec
 .. image:: https://codecov.io/github/migonzalvar/pysagec/coverage.svg?branch=master
    :target: https://codecov.io/github/migonzalvar/pysagec?branch=master
 
-pysagec is a Python library to use with SAGEC MRW webservices.
+**pysagec** is a Python library to use with SAGEC MRW webservices.
 
 It aims to be simple to use but with the ability to use any of the fields
 of the underlying API:
@@ -52,7 +52,9 @@ Features
 Installation
 ============
 
-Install pysagec from PyPI:
+Install **pysagec** `from PyPI`__:
+
+__ https://pypi.python.org/pypi/pysagec
 
 .. code:: console
 
