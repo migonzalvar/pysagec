@@ -8,16 +8,64 @@ pysagec
 .. image:: https://codecov.io/github/migonzalvar/pysagec/coverage.svg?branch=master
    :target: https://codecov.io/github/migonzalvar/pysagec?branch=master
 
-Python client to SAGEC MRW webservices.
+pysagec is a Python library to use with SAGEC MRW webservices.
 
-This is a work in progress. Methods and fields are not comprehensive but a subset
-of the most used.
+It aims to be simple to use but with the ability to use any of the fields
+of the underlying API:
+
+.. code:: python
+
+    import pysagec
+    import datetime as dt
+
+    url = '//user:pass@example.com/?franchise=12&subscriber=34&department=56'
+
+    client = pysagec.create_client(url)
+
+    pickup_info = pysagec.PickupInfo(
+        pickup_address=pysagec.Address(street_name='Plaza de España',
+                                       postal_code='36001',
+                                       city='Pontevedra'),
+        recipient_name='Juan Pérez',
+        recipient_phone_number='555555555',
+        comments='Por las mañanas.',
+    )
+
+    service_info = pysagec.ServiceInfo(
+        number_of_packages=1,
+        date=dt.date.today(),
+        service_code='0000',
+    )
+
+    response = client.send(pickup_info, service_info)
+
+    print(response.shipping_number)
+
+
+Features
+========
+
+- Use python classes instead of XML.
+- Simplify method invocation.
+- It has no dependencies, only standard library.
+
+Installation
+============
+
+Install pysagec from PyPI:
+
+.. code:: console
+
+    $ pip install pysagec
+
 
 Change log
 ==========
 
 Unreleased
 ----------
+
+- Add an example.
 
 0.1.0 - 2016-08-25
 ------------------
