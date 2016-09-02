@@ -67,7 +67,12 @@ Change log
 Unreleased
 ----------
 
+0.1.1 - 2016-09-02
+------------------
+
 - Add an example.
+
+- Include more models into __init__.
 
 0.1.0 - 2016-08-25
 ------------------
