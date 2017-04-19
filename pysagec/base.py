@@ -125,8 +125,6 @@ class Model(metaclass=ModelMeta):
                 continue
             value = raw_field[tag]
             data.update({field.name: field.to_data(value)})
-
-        print(data)
         return cls(**data)
 
     def __init__(self, **kwargs):
