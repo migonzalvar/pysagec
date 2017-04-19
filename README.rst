@@ -67,6 +67,11 @@ Change log
 Unreleased
 ----------
 
+0.1.2 - 2017-04-19
+------------------
+
+- Remove unneeded print statement.
+
 0.1.1 - 2016-09-02
 ------------------
 
